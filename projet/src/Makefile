@@ -11,9 +11,9 @@ CXXFLAGS2 = ${CXXFLAGS} -O2 -march=native -Wall
 CXXFLAGS += -O3 -march=native -Wall
 endif
 
-ALL= ant_simu.exe 
+ALL= ant_simu_cli.exe 
 
-default:	help
+default: all
 
 all: $(ALL)
 
@@ -23,12 +23,18 @@ clean:
 .cpp.o:
 	$(CXX) $(CXXFLAGS2) -c $^ -o $@	
 
+ant_simu_cli.exe : ant_simu_cli.o ant.o fractal_land.o
+	$(CXX) $(CXXFLAGS2) $^ -o $@
+
+sdl: ant_simu.exe
+
 ant_simu.exe : ant.o fractal_land.o renderer.o window.o ant_simu.o
-	$(CXX) $(CXXFLAGS2) $^ -o $@ $(LIB)	
+	$(CXX) $(CXXFLAGS2) $^ -o $@ $(LIB)
 
 help:
 	@echo "Available targets : "
 	@echo "    all            : compile all executables"
+	@echo "    sdl            : build the SDL visualization executable (requires SDL2)"
 	@echo "Add DEBUG=yes to compile in debug"
 	@echo "Configuration :"
 	@echo "    CXX      :    $(CXX)"

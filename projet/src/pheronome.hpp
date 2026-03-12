@@ -6,6 +6,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <omp.h>
 #include "basic_types.hpp"
 
 /**
@@ -90,12 +91,18 @@ public:
         double             v2_upper    = std::max( upper_cell[1], 0. );
         double             v1_bottom   = std::max( bottom_cell[0], 0. );
         double             v2_bottom   = std::max( bottom_cell[1], 0. );
-        m_buffer_pheronome[( i + 1 ) * m_stride + ( j + 1 )][0] =
+        auto& slot = m_buffer_pheronome[( i + 1 ) * m_stride + ( j + 1 )];
+        double new_v1 =
             m_alpha * std::max( {v1_left, v1_right, v1_upper, v1_bottom} ) +
             ( 1 - m_alpha ) * 0.25 * ( v1_left + v1_right + v1_upper + v1_bottom );
-        m_buffer_pheronome[( i + 1 ) * m_stride + ( j + 1 )][1] =
+        double new_v2 =
             m_alpha * std::max( {v2_left, v2_right, v2_upper, v2_bottom} ) +
             ( 1 - m_alpha ) * 0.25 * ( v2_left + v2_right + v2_upper + v2_bottom );
+#pragma omp critical
+        {
+            slot[0] = std::max( slot[0], new_v1 );
+            slot[1] = std::max( slot[1], new_v2 );
+        }
     }
 
     void update( ) {
