@@ -1,8 +1,8 @@
 #ifndef _BASIC_TYPES_HPP_
 #define _BASIC_TYPES_HPP_
 
-// Minimal type definitions to avoid requiring SDL2 for headless execution.
-// position_t is used to store grid coordinates.
+// Définitions de types minimales pour éviter la dépendance à SDL2 dans l'exécution sans interface graphique.
+// position_t est utilisé pour stocker des coordonnées dans la grille.
 struct position_t { int x; int y; };
 
 inline bool operator == ( const position_t& pos1, const position_t& pos2 )
